@@ -8,7 +8,10 @@ use Jiaxincui\JWTAuth\Manager;
 class JWT extends Facade
 {
 
-    protected static function getFacadeAccessor()
+    /**
+     * @return string
+     */
+    protected static function getFacadeAccessor(): string
     {
         return Manager::class;
     }

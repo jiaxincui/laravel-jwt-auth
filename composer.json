@@ -1,8 +1,13 @@
 {
     "name": "jiaxincui/laravel-jwt-auth",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "JWT auth package for laravel",
-    "keywords": ["laravel", "jwt", "rsa", "jwt-auth"],
+    "keywords": [
+        "laravel",
+        "jwt",
+        "rsa",
+        "jwt-auth"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -13,20 +18,18 @@
     ],
     "support": {
         "email": "jenkincei@hotmail.com",
-        "source":"https://github.com/jiaxincui/laravel-jwt-auth"
+        "source": "https://github.com/jiaxincui/laravel-jwt-auth"
     },
     "minimum-stability": "stable",
     "require": {
-        "php": ">=7.4",
-        "lcobucci/jwt": "^4.0",
+        "php": "^7.4|^8.0",
         "illuminate/auth": "^6.0|^7.0|^8.0",
         "illuminate/config": "^6.0|^7.0|^8.0",
         "illuminate/console": "^6.0|^7.0|^8.0",
         "illuminate/contracts": "^6.0|^7.0|^8.0",
         "illuminate/http": "^6.0|^7.0|^8.0",
-        "illuminate/support": "^6.0|^7.0|^8.0"
-
-
+        "illuminate/support": "^6.0|^7.0|^8.0",
+        "lcobucci/jwt": "^4.0"
     },
     "autoload": {
         "psr-4": {
