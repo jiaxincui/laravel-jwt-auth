@@ -145,14 +145,15 @@ class Manager
      */
     public function getUserMapper()
     {
-        if (!isset($this->userMapper)) {
+        if (is_null($this->userMapper)) {
             $userMapper = $this->config->get('jwt-auth.user_mapper');
             if (class_exists($userMapper)) {
                 $userMapper = new $userMapper;
+                $this->userMapper = $userMapper instanceof UserMapper ? $userMapper : new GenericUserMapper;
+            } else {
+                $this->userMapper = new GenericUserMapper;
             }
-            $this->userMapper = $userMapper instanceof UserMapper ? $userMapper : new GenericUserMapper;
         }
-
         return $this->userMapper;
     }
 
@@ -198,7 +199,7 @@ class Manager
      */
     public function getVerificationKey(): Key
     {
-        if (!isset($this->verificationKey)) {
+        if (is_null($this->verificationKey)) {
             $this->verificationKey = InMemory::file($this->config->get('jwt-auth.key.public'));
         }
         return $this->verificationKey;
@@ -263,7 +264,7 @@ class Manager
      */
     public function getToken(): UnencryptedToken
     {
-        if (!isset($this->builder)) {
+        if (is_null($this->builder)) {
             throw new JWTException('None Builder');
         }
         return $this->builder->getToken($this->getSigner(), $this->getSigningKey());
@@ -306,7 +307,7 @@ class Manager
     public function getUser(Request $request): ?Authenticatable
     {
         $userMapper = $this->getUserMapper();
-        if (isset($this->token)) {
+        if (!is_null($this->token)) {
             return $userMapper->user($this->token->claims());
         }
         if (!is_null($token = $this->validatedToken($request))) {
@@ -324,7 +325,7 @@ class Manager
     public function __call($method, $args)
     {
         if (
-            isset($this->builder)
+            !is_null($this->builder)
             && in_array($method, ['permittedFor', 'expiresAt', 'identifiedBy', 'issuedAt', 'issuedBy', 'canOnlyBeUsedAfter', 'relatedTo', 'withHeader', 'withClaim'])
         ) {
             $this->builder->$method(...$args);
