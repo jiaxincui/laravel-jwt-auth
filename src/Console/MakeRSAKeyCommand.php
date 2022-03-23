@@ -23,6 +23,16 @@ class MakeRSAKeyCommand extends Command
     protected $description = 'Create the encryption keys for API authentication';
 
     /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
      * Execute the console command.
      *
      */
