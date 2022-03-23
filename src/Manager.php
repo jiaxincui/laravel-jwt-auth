@@ -18,7 +18,6 @@ use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\UnencryptedToken;
 use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
-use Lcobucci\JWT\Validation\Constraint\PermittedFor;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
 
 class Manager
@@ -54,7 +53,7 @@ class Manager
     /**
      * @var array
      */
-    protected array $staticConstraints;
+    protected array $constraints;
     /**
      * @var UnencryptedToken
      */
@@ -125,7 +124,7 @@ class Manager
      */
     public function getSigningKey(): Key
     {
-        if (!isset($this->signingKey)) {
+        if (empty($this->signingKey)) {
             $this->signingKey = InMemory::file($this->config->get('jwt-auth.key.private'));
         }
         return $this->signingKey;
@@ -145,7 +144,7 @@ class Manager
      */
     public function getUserMapper()
     {
-        if (is_null($this->userMapper)) {
+        if (empty($this->userMapper)) {
             $userMapper = $this->config->get('jwt-auth.user_mapper');
             if (class_exists($userMapper)) {
                 $userMapper = new $userMapper;
@@ -199,7 +198,7 @@ class Manager
      */
     public function getVerificationKey(): Key
     {
-        if (is_null($this->verificationKey)) {
+        if (empty($this->verificationKey)) {
             $this->verificationKey = InMemory::file($this->config->get('jwt-auth.key.public'));
         }
         return $this->verificationKey;
@@ -210,16 +209,11 @@ class Manager
      */
     public function getConstrains(): array
     {
-        if (empty($this->staticConstraints)) {
+        if (empty($this->constraints)) {
             $constraints[] = new SignedWith($this->signer, $this->getVerificationKey());
-
-            if ($permittedFor = $this->config->get('jwt-auth.permitted')) {
-                $constraints[] = new PermittedFor($permittedFor);
-            }
-
-            $this->staticConstraints = $constraints;
+            $this->constraints = $constraints;
         }
-        return $this->staticConstraints;
+        return $this->constraints;
     }
 
     /**
@@ -264,8 +258,8 @@ class Manager
      */
     public function getToken(): UnencryptedToken
     {
-        if (is_null($this->builder)) {
-            throw new JWTException('None Builder');
+        if (empty($this->builder)) {
+            throw new JWTException('None Builder', 500);
         }
         return $this->builder->getToken($this->getSigner(), $this->getSigningKey());
     }
@@ -274,8 +268,12 @@ class Manager
      * @param Request $request
      * @return UnencryptedToken|null
      */
-    protected function validatedToken(Request $request): ?UnencryptedToken
+    public function validatedToken(Request $request): ?UnencryptedToken
     {
+        if (!empty($this->token)) {
+            return $this->token;
+        }
+
         if (is_null($request->bearerToken())) {
             return null;
         }
@@ -307,14 +305,10 @@ class Manager
     public function getUser(Request $request): ?Authenticatable
     {
         $userMapper = $this->getUserMapper();
-        if (!is_null($this->token)) {
-            return $userMapper->user($this->token->claims());
-        }
-        if (!is_null($token = $this->validatedToken($request))) {
-            return $userMapper->user($token->claims());
-        }
 
-        return null;
+        $token = $this->validatedToken($request);
+
+        return $token ? $userMapper->user($token->claims()) : null;
     }
 
     /**
@@ -325,7 +319,7 @@ class Manager
     public function __call($method, $args)
     {
         if (
-            !is_null($this->builder)
+            !empty($this->builder)
             && in_array($method, ['permittedFor', 'expiresAt', 'identifiedBy', 'issuedAt', 'issuedBy', 'canOnlyBeUsedAfter', 'relatedTo', 'withHeader', 'withClaim'])
         ) {
             $this->builder->$method(...$args);
