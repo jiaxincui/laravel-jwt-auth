@@ -30,7 +30,7 @@ class IsPermittedFor
     public function handle($request, Closure $next, $permitted)
     {
         $token = $this->jwt->validatedToken($request);
-        if (is_null($token) || $token->isPermittedFor($permitted)) {
+        if (is_null($token) || !$token->isPermittedFor($permitted)) {
             throw new JWTException('The token is not allowed to be used by this audience', 403);
         }
         return $next($request);
