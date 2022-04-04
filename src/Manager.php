@@ -138,7 +138,6 @@ class Manager
         $this->signingKey = $signingKey;
     }
 
-
     /**
      * @return GenericUserMapper|UserMapper
      */

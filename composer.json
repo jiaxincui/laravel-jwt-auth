@@ -1,6 +1,6 @@
 {
   "name": "jiaxincui/laravel-jwt-auth",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "JWT auth package for laravel",
   "keywords": [
     "laravel",
