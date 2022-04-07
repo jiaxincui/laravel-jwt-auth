@@ -210,6 +210,7 @@ class Manager
     {
         if (empty($this->constraints)) {
             $constraints[] = new SignedWith($this->signer, $this->getVerificationKey());
+            $constraints[] = new LooseValidAt(new SystemClock(new \DateTimeZone($this->config->get('app.timezone'))));
             $this->constraints = $constraints;
         }
         return $this->constraints;
@@ -283,10 +284,7 @@ class Manager
             return null;
         }
 
-        $now = new SystemClock(new \DateTimeZone($this->config->get('app.timezone')));
         $constraints = $this->getConstrains();
-
-        $constraints[] = new LooseValidAt($now);
 
         if (($token instanceof UnencryptedToken) &&
             $this->jwtConfig->validator()->validate($token, ...$constraints)
