@@ -3,7 +3,6 @@
 namespace Jiaxincui\JWTAuth\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Jiaxincui\JWTAuth\Manager;
 
 class JWTAuth extends Facade
 {

@@ -5,7 +5,6 @@ namespace Jiaxincui\JWTAuth\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Jiaxincui\JWTAuth\JWTAuth;
-use Jiaxincui\JWTAuth\Manager;
 use Jiaxincui\JWTAuth\Exceptions\JWTException;
 
 class IsPermittedFor
