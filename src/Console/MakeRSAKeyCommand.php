@@ -39,8 +39,8 @@ class MakeRSAKeyCommand extends Command
     public function handle()
     {
         [$publicKeyPath, $privateKeyPath] = [
-            config('jwt-auth.key.public'),
-            config('jwt-auth.key.private'),
+            config('jwtauth.key.public'),
+            config('jwtauth.key.private'),
         ];
 
         if ((file_exists($publicKeyPath) || file_exists($privateKeyPath)) && !$this->option('force')) {

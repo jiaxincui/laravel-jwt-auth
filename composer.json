@@ -1,6 +1,6 @@
 {
   "name": "jiaxincui/laravel-jwt-auth",
-  "version": "0.3.5",
+  "version": "dev-1.0.0",
   "description": "JWT auth package for laravel",
   "keywords": [
     "laravel",
@@ -22,14 +22,15 @@
   },
   "minimum-stability": "stable",
   "require": {
-    "php": "^8.0",
-    "illuminate/auth": "^8.0|^9.0|^10.0",
-    "illuminate/config": "^8.0|^9.0|^10.0",
-    "illuminate/console": "^8.0|^9.0|^10.0",
-    "illuminate/contracts": "^8.0|^9.0|^10.0",
-    "illuminate/http": "^8.0|^9.0|^10.0",
-    "illuminate/support": "^8.0|^9.0|^10.0",
-    "lcobucci/jwt": "^4.0"
+    "ext-openssl": "*",
+    "illuminate/auth": "^9.0|^10.0|^11.0",
+    "illuminate/config": "9.0|^10.0|^11.0",
+    "illuminate/console": "^9.0|^10.0|^11.0",
+    "illuminate/contracts": "^9.0|^10.0|^11.0",
+    "illuminate/http": "^9.0|^10.0|^11.0",
+    "illuminate/support": "^9.0|^10.0|^11.0",
+    "lcobucci/jwt": "^5.0",
+    "php": "^8.1"
   },
   "autoload": {
     "psr-4": {

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Jiaxincui\JWTAuth\Console\MakeRSAKeyCommand;
 use Lcobucci\JWT\Configuration;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
 
 class JWTAuthServiceProvider extends ServiceProvider
@@ -15,8 +16,8 @@ class JWTAuthServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
 
             $this->publishes([
-                __DIR__ . '/../config/jwt-auth.php' => config_path('jwt-auth.php')
-            ], 'jwt-auth');
+                __DIR__ . '/../config/jwtauth.php' => config_path('jwtauth.php')
+            ], 'jwtauth');
 
             $this->commands([
                 MakeRSAKeyCommand::class,
@@ -24,14 +25,26 @@ class JWTAuthServiceProvider extends ServiceProvider
         }
 
         Auth::viaRequest('jwt', function ($request) {
-            return $this->app->make(Manager::class)->getUser($request);
+            return $this->app->make('jwtauth')->user($request);
         });
     }
 
     public function register()
     {
-        $this->app->singleton(Manager::class, function ($app) {
-             return new Manager(Configuration::forUnsecuredSigner(), new Sha256(), $app['config']);
+        $this->app->singleton('jwtauth', function ($app) {
+            $config = $app['config'];
+            $jwtConfig = Configuration::forAsymmetricSigner(
+                new Sha256(),
+                InMemory::file($config->get('jwtauth.key.public')),
+                InMemory::file($config->get('jwtauth.key.public'))
+            );
+            $userMapper = $config->get('jwtauth.user_mapper');
+            if (class_exists($userMapper)) {
+                $userMapper = new $userMapper;
+            }
+            $userMapper = $userMapper instanceof UserMapper ? $userMapper : new GenericUserMapper;
+
+            return new JWTAuth($jwtConfig, $config, $userMapper);
         });
     }
 }
