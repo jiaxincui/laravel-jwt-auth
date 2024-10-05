@@ -35,7 +35,7 @@ class JWTAuthServiceProvider extends ServiceProvider
             $config = $app['config'];
             $jwtConfig = Configuration::forAsymmetricSigner(
                 new Sha256(),
-                InMemory::file($config->get('jwtauth.key.public')),
+                InMemory::file($config->get('jwtauth.key.private')),
                 InMemory::file($config->get('jwtauth.key.public'))
             );
             $userMapper = $config->get('jwtauth.user_mapper');

@@ -30,6 +30,7 @@ class JWTAuth
         $this->jwtConfig = $configuration;
         $this->config = $config;
         $this->userMapper = $userMapper;
+        $this->token = null;
     }
 
     /**
@@ -41,7 +42,7 @@ class JWTAuth
     {
         $builder = $this->jwtConfig->builder();
 
-        $iss = $this->config->get('jwtauth.issue_by', $this->config->get('app.url'));
+        $iss = $this->config->get('jwtauth.issue_by') ?: $this->config->get('app.url');
         $jti = Str::random();
         $iat = new DateTimeImmutable();
         $exp = $iat->add(new DateInterval('PT' . $this->config->get('jwtauth.access_token_ttl', 300) . 'S'));
