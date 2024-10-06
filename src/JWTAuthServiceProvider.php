@@ -5,6 +5,7 @@ namespace Jiaxincui\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Jiaxincui\JWTAuth\Console\MakeRSAKeyCommand;
+use Jiaxincui\JWTAuth\JWTAuth;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
@@ -43,7 +44,6 @@ class JWTAuthServiceProvider extends ServiceProvider
                 $userMapper = new $userMapper;
             }
             $userMapper = $userMapper instanceof UserMapper ? $userMapper : new GenericUserMapper;
-
             return new JWTAuth($jwtConfig, $config, $userMapper);
         });
     }

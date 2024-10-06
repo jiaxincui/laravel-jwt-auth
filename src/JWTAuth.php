@@ -47,19 +47,17 @@ class JWTAuth
         $iat = new DateTimeImmutable();
         $exp = $iat->add(new DateInterval('PT' . $this->config->get('jwtauth.access_token_ttl', 300) . 'S'));
 
-        $builder
+        $builder = $builder
             ->issuedBy($iss)
             ->identifiedBy($jti)
-            ->relatedTo($subject->getJWTIdentifier())
+            ->relatedTo((string) $subject->getJWTIdentifier())
             ->issuedAt($iat)
             ->expiresAt($exp);
 
         $customClaims = $subject->getJWTCustomClaims();
-
-        foreach ($customClaims as $key => $value) {
-            $builder->withClaim($key, $value);
+        foreach ($customClaims as $key => $val) {
+            $builder = $builder->withClaim($key, $val);
         }
-
         return $builder->getToken($this->jwtConfig->signer(), $this->jwtConfig->signingKey());
     }
 
