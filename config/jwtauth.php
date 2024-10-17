@@ -7,7 +7,7 @@ return [
         'private' => storage_path('private.key')
     ],
 
-    'access_token_expire' => 300,
+    'access_token_ttl' => 300,
 
     'user_mapper' => \Jiaxincui\JWTAuth\GenericUserMapper::class,
 ];
